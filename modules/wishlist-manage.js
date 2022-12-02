@@ -147,9 +147,9 @@ async function dump_as_csv_string() {
             wishlists[hunter].hunterId,
             wishlists[hunter].helper,
             wishlists[hunter].helperId,
-            'stalked' in wishlists[hunter],
+            'stalked' in wishlists[hunter] ? wishlists[hunter].stalked : false,
             'can_see_santa' in wishlists[hunter] ? wishlists[hunter].can_see_santa : false,
-            wishlists[hunter].wishlist,
+            '"' + wishlists[hunter].wishlist.replace(/"/g, '""') + '"',
         ]);
     }
     // Build a long string of CSV

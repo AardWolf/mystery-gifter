@@ -15,7 +15,7 @@ fs.readFile('assignments.csv', 'utf8', function(err, data) {
                 'helperId': values[4],
                 'stalked': values[5],
                 'can_see_santa': values[6],
-                'wishlist': values[7],
+                'wishlist': values[7].slice(1, -1).replace(/""/g, '"'),
             };
             console.log(`Wishlist was: ${values[7]}`);
         }
