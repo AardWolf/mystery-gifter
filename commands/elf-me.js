@@ -1,8 +1,20 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { registerUser, isRegistered, register, deregister } = require('../modules/wishlist-manage');
 
+async function addParticipantRole(interaction) {
+    const roleId = interaction.client.participantRoleId;
+    if (!roleId) return '';
 
-
+    const userId = interaction.user.id;
+    try {
+        const member = await interaction.guild.members.fetch(userId);
+        await member.roles.add(roleId, 'Mystery gift event signup via /elf-me');
+        return '';
+    } catch (error) {
+        console.error(`ELF-ME: Could not add participant role ${roleId} to ${userId}:`, error);
+        return '\nYou are registered, but the participant role could not be added. Wait a while, then retry /elf-me with the same Hunter ID.';
+    }
+}
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('elf-me')
@@ -24,12 +36,13 @@ module.exports = {
                         // Using a new hunter Id
                         const registered = registerUser(user.id, hunterId);
                         if (registered) {
+                            const roleNotice = await addParticipantRole(interaction);
                             try {
                                 await channel.send({
                                     content: `${user.id} aka <@${user.id}> CHANGED their hunter id from ${alreadyRegistered} to ${hunterId} which is <https://p.mshnt.ca/${hunterId}>`,
                                 });
                                 await interaction.editReply({
-                                    content: `You changed from ${alreadyRegistered} to hunter id ${registered}`,
+                                    content: `You changed from ${alreadyRegistered} to hunter id ${registered}${roleNotice}`,
                                     flags: MessageFlags.Ephemeral,
                                 });
                             } catch (error) {
@@ -58,10 +71,11 @@ module.exports = {
                             }
                         }
                     } else if (hunterId && hunterId === alreadyRegistered) {
-                        // Don't bother changing to what's already set
+                        // The same Hunter ID can retry a failed role grant.
+                        const roleNotice = await addParticipantRole(interaction);
                         try {
                             await interaction.editReply({
-                                content: `You are still registered as ${hunterId}`,
+                                content: `You are still registered as ${hunterId}${roleNotice}`,
                                 flags: MessageFlags.Ephemeral,
                             });
                         } catch (error) {
@@ -106,12 +120,13 @@ module.exports = {
                     if (hunterId) {
                         const registered = registerUser(user.id, hunterId);
                         if (Array.isArray(registered) && registered.length === 1 && registered[0] === hunterId) {
+                            const roleNotice = await addParticipantRole(interaction);
                             try {
                                 await channel.send({
                                     content: `${user.id} aka <@${user.id}> registered as ${hunterId} which is <https://p.mshnt.ca/${hunterId}>`,
                                 });
                                 await interaction.editReply({
-                                    content: `You registered as ${registered}. That's <https://p.mshnt.ca/${registered}>. Please double-check, then you can set your wishlist.`,
+                                    content: `You registered as ${registered}. That's <https://p.mshnt.ca/${registered}>. Please double-check, then you can set your wishlist.${roleNotice}`,
                                     flags: MessageFlags.Ephemeral,
                                 });
                             } catch (error) {
