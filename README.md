@@ -9,6 +9,8 @@ clone the repo. Copy config.json.sample to config.json:
 - guildId is the single server the bot will be stalking
 - channelId is the secret channel for the mystery gifting elf admins to work within - assignments get dumped here
   - Make sure the bot role is added to this channel with send messages and attach files!
+- participantRoleId could be added for the ease of pinging participants in a large server
+  - bot's hierachy have to be able participants to manage them/add role
 
 You'll need node.js - version 20.10 was last used and worked. nodejs for Ubuntu.
 

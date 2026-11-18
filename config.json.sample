@@ -3,5 +3,6 @@
     "clientId": "your bot's application Id",
     "guildId": "You guild's id, used for registering commands",
     "channelId": "channel id for registration responses",
+    "participantRoleId": "role id that you want participants to have",
     "signupsActive": true
 }

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
-const { token, channelId, signupsActive } = require('./config.json');
+const { token, channelId, signupsActive, participantRoleId } = require('./config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 let is_exiting = false;
@@ -8,6 +8,7 @@ let is_exiting = false;
 client.commands = new Collection();
 client.channelId = channelId;
 client.signupsActive = signupsActive;
+client.participantRoleId = participantRoleId;
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
